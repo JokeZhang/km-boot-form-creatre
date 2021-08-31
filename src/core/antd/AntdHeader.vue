@@ -1,6 +1,9 @@
 <template>
   <a-layout-header class="btn-bar">
     <slot></slot>
+    <a-button  type="link" size="small" @click="$emit('swaggerConfig')">
+      swagger配置
+    </a-button>
     <a-button
       v-if="$attrs.uploadJson"
       type="link"
@@ -60,14 +63,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import SvgIcon from '@/components/SvgIcon.vue'
-
+import { defineComponent, reactive, toRefs } from "vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 export default defineComponent({
-  name: 'AntdHeader',
+  name: "AntdHeader",
   components: {
-    SvgIcon
+    SvgIcon,
   },
-  emits: ['uploadJson', 'clearable', 'preview', 'generateJson', 'generateCode']
-})
+  emits: ["uploadJson", "clearable", "preview", "generateJson", "generateCode"],
+  setup() {
+    const state = reactive({
+      visable: false,
+    });
+    return {
+      ...toRefs(state)
+    };
+  },
+});
 </script>

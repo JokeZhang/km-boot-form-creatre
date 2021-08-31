@@ -41,6 +41,14 @@ module.exports = {
       .end()
   },
   devServer: {
-    disableHostCheck: true
-  }
+    proxy: {
+      '/system': {
+        target: 'http://127.0.0.1:8888',
+        ws: false,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/system/, '/system/')
+      },
+    }
+  },
+
 }

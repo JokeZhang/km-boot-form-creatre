@@ -84,7 +84,7 @@
             :key="item.value"
             :value="item.value"
             :style="{
-              display: element.options.inline ? 'inline-block' : 'block'
+              display: element.options.inline ? 'inline-block' : 'block',
             }"
             >{{ element.options.showLabel ? item.label : item.value }}</a-radio
           >
@@ -102,7 +102,7 @@
             :key="item.value"
             :value="item.value"
             :style="{
-              display: element.options.inline ? 'inline-block' : 'block'
+              display: element.options.inline ? 'inline-block' : 'block',
             }"
             >{{
               element.options.showLabel ? item.label : item.value
@@ -213,7 +213,7 @@
             iconClass="insert"
           />
           <a-button v-else>
-            <SvgIcon iconClass="img-upload" style="margin-right: 10px;" />
+            <SvgIcon iconClass="img-upload" style="margin-right: 10px" />
             点击上传
           </a-button>
         </a-upload>
@@ -251,38 +251,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import SvgIcon from '@/components/SvgIcon.vue'
+import { defineComponent, PropType } from "vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 // import RichTextEditor from '@/components/RichTextEditor.vue'
-import { WidgetForm } from '@/config/antd'
+import { WidgetForm } from "@/config/antd";
 
 export default defineComponent({
-  name: 'AntdWidgetFormItem',
+  name: "AntdWidgetFormItem",
   components: {
     SvgIcon,
     // RichTextEditor
   },
   props: {
     config: {
-      type: Object as PropType<WidgetForm['config']>,
-      required: true
+      type: Object as PropType<WidgetForm["config"]>,
+      required: true,
     },
     element: {
       type: Object,
-      required: true
+      required: true,
     },
     selectWidget: {
-      type: Object
-    }
+      type: Object,
+    },
   },
-  emits: ['copy', 'delete'],
+  emits: ["copy", "delete"],
   setup() {
     const handleFilterOption = (input: string, option: { label: string }) =>
-      option.label.toLowerCase().includes(input)
+      option.label.toLowerCase().includes(input);
 
     return {
-      handleFilterOption
-    }
-  }
-})
+      handleFilterOption,
+    };
+  },
+});
 </script>

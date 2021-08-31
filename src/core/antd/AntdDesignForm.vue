@@ -30,6 +30,7 @@
               @generateJson="handleGenerateJson"
               @generateCode="handleGenerateCode"
               @clearable="handleClearable"
+              @swaggerConfig="swaggerVisable = true"
             >
               <slot name="header"></slot>
             </AntdHeader>
@@ -144,29 +145,34 @@
           </a-tab-pane>
         </a-tabs>
       </a-modal>
+      <swagger-config
+        v-model:value="swaggerVisable"
+        @ok="handleSwaggerGenerator"
+      ></swagger-config>
     </a-layout>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, PropType, toRefs, watchEffect } from 'vue'
-import { message } from 'ant-design-vue'
-import { merge } from 'lodash'
-import CodeEditor from '@/components/CodeEditor.vue'
-import ComponentGroup from '@/components/ComponentGroup.vue'
-import AntdHeader from './AntdHeader.vue'
-import AntdWidgetForm from './AntdWidgetForm.vue'
-import AntdGenerateForm from './AntdGenerateForm.vue'
-import AntdWidgetConfig from './AntdWidgetConfig.vue'
-import AntdFormConfig from './AntdFormConfig.vue'
-import { antd } from '@/config'
-import { copy } from '@/utils'
-import { CodeType, PlatformType } from '@/enums'
-import generateCode from '@/utils/generateCode'
-import { WidgetForm } from '@/config/antd'
+import { defineComponent, reactive, PropType, toRefs, watchEffect } from "vue";
+import { message } from "ant-design-vue";
+import { merge } from "lodash";
+import CodeEditor from "@/components/CodeEditor.vue";
+import ComponentGroup from "@/components/ComponentGroup.vue";
+import AntdHeader from "./AntdHeader.vue";
+import AntdWidgetForm from "./AntdWidgetForm.vue";
+import AntdGenerateForm from "./AntdGenerateForm.vue";
+import AntdWidgetConfig from "./AntdWidgetConfig.vue";
+import AntdFormConfig from "./AntdFormConfig.vue";
+import SwaggerConfig from "./SwaggerConfig.vue";
+import { antd } from "@/config";
+import { copy } from "@/utils";
+import { CodeType, PlatformType } from "@/enums";
+import generateCode from "@/utils/generateCode";
+import { WidgetForm } from "@/config/antd";
 
 export default defineComponent({
-  name: 'AntdDesignForm',
+  name: "AntdDesignForm",
   components: {
     AntdHeader,
     ComponentGroup,
@@ -174,55 +180,56 @@ export default defineComponent({
     AntdWidgetForm,
     AntdGenerateForm,
     AntdWidgetConfig,
-    AntdFormConfig
+    AntdFormConfig,
+    SwaggerConfig,
   },
   props: {
     preview: {
       type: Boolean,
-      default: true
+      default: true,
     },
     generateCode: {
       type: Boolean,
-      default: true
+      default: true,
     },
     generateJson: {
       type: Boolean,
-      default: true
+      default: true,
     },
     uploadJson: {
       type: Boolean,
-      default: true
+      default: true,
     },
     clearable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     basicFields: {
       type: Array as PropType<Array<string>>,
       default: () => [
-        'input',
-        'password',
-        'textarea',
-        'number',
-        'radio',
-        'checkbox',
-        'time',
-        'date',
-        'rate',
-        'select',
-        'switch',
-        'slider',
-        'text'
-      ]
+        "input",
+        "password",
+        "textarea",
+        "number",
+        "radio",
+        "checkbox",
+        "time",
+        "date",
+        "rate",
+        "select",
+        "switch",
+        "slider",
+        "text",
+      ],
     },
     advanceFields: {
       type: Array as PropType<Array<string>>,
-      default: () => ['img-upload', 'richtext-editor', 'cascader']
+      default: () => ["img-upload", "richtext-editor", "cascader"],
     },
     layoutFields: {
       type: Array as PropType<Array<string>>,
-      default: () => ['grid']
-    }
+      default: () => ["grid"],
+    },
   },
   setup() {
     const state = reactive({
@@ -231,7 +238,7 @@ export default defineComponent({
       widgetForm: JSON.parse(JSON.stringify(antd.widgetForm)),
       widgetFormSelect: undefined,
       generateFormRef: null as any,
-      configTab: 'widget',
+      configTab: "widget",
       previewVisible: false,
       uploadJsonVisible: false,
       dataJsonVisible: false,
@@ -239,45 +246,51 @@ export default defineComponent({
       generateJsonVisible: false,
       generateCodeVisible: false,
       generateJsonTemplate: JSON.stringify(antd.widgetForm, null, 2),
-      dataJsonTemplate: '',
-      dataCodeTemplate: '',
+      dataJsonTemplate: "",
+      dataCodeTemplate: "",
       codeLanguage: CodeType.Vue,
-      jsonEg: JSON.stringify(antd.widgetForm, null, 2)
-    })
+      jsonEg: JSON.stringify(antd.widgetForm, null, 2),
+      swaggerVisable: false,
+    });
 
     const handleUploadJson = () => {
       try {
-        setJson(JSON.parse(state.jsonEg))
-        state.uploadJsonVisible = false
-        message.success('上传成功')
+        setJson(JSON.parse(state.jsonEg));
+        state.uploadJsonVisible = false;
+        message.success("上传成功");
       } catch (error) {
-        message.error('上传失败')
+        message.error("上传失败");
       }
-    }
+    };
+
+    const handleSwaggerGenerator = (data:WidgetForm) => {
+      console.log("+++++++++++++++++++++++++++++++",data)
+      setJson(data);
+    };
 
     const handleCopyClick = (text: string) => {
-      copy(text)
-      message.success('Copy成功')
-    }
+      copy(text);
+      message.success("Copy成功");
+    };
 
     const handleGetData = () => {
       state.generateFormRef.getData().then((res: any) => {
-        state.dataJsonTemplate = JSON.stringify(res, null, 2)
-        state.dataJsonVisible = true
-      })
-    }
+        state.dataJsonTemplate = JSON.stringify(res, null, 2);
+        state.dataJsonVisible = true;
+      });
+    };
 
     const handleGenerateJson = () =>
       (state.generateJsonTemplate = JSON.stringify(
         state.widgetForm,
         null,
         2
-      )) && (state.generateJsonVisible = true)
+      )) && (state.generateJsonVisible = true);
 
     const handleGenerateCode = () => {
-      state.codeLanguage = CodeType.Vue
-      state.dataCodeVisible = true
-    }
+      state.codeLanguage = CodeType.Vue;
+      state.dataCodeVisible = true;
+    };
 
     watchEffect(() => {
       if (state.dataCodeVisible) {
@@ -285,33 +298,32 @@ export default defineComponent({
           state.widgetForm,
           state.codeLanguage,
           PlatformType.Antd
-        )!
+        )!;
       }
-    })
+    });
 
     const handleClearable = () => {
-      state.widgetForm.list = []
-      merge(state.widgetForm, JSON.parse(JSON.stringify(antd.widgetForm)))
-      state.widgetFormSelect = undefined
-    }
+      state.widgetForm.list = [];
+      merge(state.widgetForm, JSON.parse(JSON.stringify(antd.widgetForm)));
+      state.widgetFormSelect = undefined;
+    };
 
-    const handleReset = () => state.generateFormRef.reset()
+    const handleReset = () => state.generateFormRef.reset();
 
-    const getJson = () => state.widgetForm
+    const getJson = () => state.widgetForm;
 
     const setJson = (json: WidgetForm) => {
-      state.widgetForm.list = []
-      merge(state.widgetForm, json)
+      state.widgetForm.list = [];
+      merge(state.widgetForm, json);
       if (json.list.length) {
-        state.widgetFormSelect = json.list[0]
+        state.widgetFormSelect = json.list[0];
       }
-    }
+    };
 
     const getTemplate = (codeType: CodeType) =>
-      generateCode(state.widgetForm, codeType, PlatformType.Antd)
+      generateCode(state.widgetForm, codeType, PlatformType.Antd);
 
-    const clear = () => handleClearable()
-
+    const clear = () => handleClearable();
     return {
       ...toRefs(state),
       handleUploadJson,
@@ -324,8 +336,9 @@ export default defineComponent({
       getJson,
       setJson,
       getTemplate,
-      clear
-    }
-  }
-})
+      clear,
+      handleSwaggerGenerator,
+    };
+  },
+});
 </script>
