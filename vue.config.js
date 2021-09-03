@@ -28,6 +28,10 @@ module.exports = {
       .rule('svg')
       .exclude.add(resolve('src/icons'))
       .end()
+    config.resolve.alias
+      .set('@', resolve('src'))
+      .set('ejs', 'ejs/ejs.min.js')
+
     config.module
       .rule('icons')
       .test(/\.svg$/)

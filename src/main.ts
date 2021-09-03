@@ -10,5 +10,6 @@ const app = createApp(App)
 app.use(store)
 app.use(router)
 app.use(Antd)
+app.config.globalProperties.$deepCopy = (data: any): any => JSON.parse(JSON.stringify(data))
 app.mount('#app')
 

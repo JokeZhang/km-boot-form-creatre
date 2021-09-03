@@ -1,0 +1,84 @@
+{
+    "enableUpdate": true,
+    "enableDetial": false,
+    "createAction": {
+        "name": "dictAdd",
+        "description": "新增数据字典",
+        "method": "post",
+        "path": "/system/dict",
+        "requestModel": {
+            "title": "DictFormQo",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "描述"
+                },
+                "dictCode": {
+                    "type": "string",
+                    "description": "字典编码"
+                },
+                "dictName": {
+                    "type": "string",
+                    "description": "字典名称"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "description": "字典类型0为string,1为number",
+                    "format": "int32"
+                }
+            }
+        }
+    },
+    "updateAction": {
+        "name": "dictUpdate",
+        "description": "字典项目更新",
+        "method": "put",
+        "path": "/system/dict/item",
+        "requestModel": {
+            "title": "DictItemFormQo",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "描述"
+                },
+                "dictId": {
+                    "type": "string",
+                    "description": "字典id"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "itemText": {
+                    "type": "string",
+                    "description": "字典项文本"
+                },
+                "itemValue": {
+                    "type": "string",
+                    "description": "字典项值"
+                },
+                "sortOrder": {
+                    "type": "integer",
+                    "description": "排序",
+                    "format": "int32"
+                },
+                "status": {
+                    "type": "integer",
+                    "description": "状态（1启用 0不启用）",
+                    "format": "int32"
+                }
+            }
+        }
+    },
+    "controllerData": {
+        "name": "数据字典",
+        "description": "Dict Controller",
+        "apiName": "DictApi"
+    },
+    "pk": "id",
+    "modelEntity": null
+}

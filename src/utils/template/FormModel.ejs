@@ -1,0 +1,39 @@
+<template>
+  <a-modal v-model:visable="visable" 
+  :maskClosable="false">
+  <template #footer>
+    <a-button key="submit" type="primary" :loading="submitLoading" @click="handleSubmit">提交</a-button>
+    <a-button key="reset" @click="resetForm">重置</a-button>
+  </template>
+
+  <a-form
+  ref="modeRef"
+  :model="model"
+  :rules="rules"
+  :layout="config.layout"
+  :labelAlign="config.labelAlign"
+  :labelCol="config.labelCol"
+  :hideRequiredMark="config.hideRequiredMark"
+  >
+  <% for (let index in widgetForm.list){ let element = widgetForm.list[index] %><% if(element.type === 'grid'){%><%if(element.key){%>
+          <a-row
+          type="flex"
+          gutter="<%= element.options.gutter ?? 0%>"
+          justify="<%= element.options.justify %>"
+          align="<%= element.options.align %>"
+        >
+        <%for(let colIndex in element.columns){ let col = element.columns[colIndex] %>
+          <a-col
+            key="<%= colIndex %>"
+            span="<%= col.span ?? 0 %>"
+          >
+          <% for(let formElement of col.list){%>${itemTemplate}<%}%>
+          </a-col> 
+          <%}%>
+        </a-row>
+        <%}%>   
+    <%} else{ let formElement = element%>${itemTemplate}<%}%>      
+  <%}%>
+  </a-form>
+  </a-modal>
+  </template>

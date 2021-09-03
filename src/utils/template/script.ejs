@@ -1,0 +1,109 @@
+<script lang="ts">
+    <% let properties = apiConfig.createAction.requestModel.properties %>
+    import { defineComponent, reactive, toRefs,ref } from 'vue'
+    import { message } from 'ant-design-vue';
+    import { <%=apiConfig.createAction.name %><%=apiConfig.enableUpdate ? ',' + apiConfig.updateAction.name : '' %><%=apiConfig.enableDetail ? ',' + apiConfig.detailAction.name : '' %>} from "@/api/<%=apiConfig.controllerData.apiName%>"
+    interface FormModel {<% for (let key in properties) { %>
+      <%='//'+properties[key].description%>
+      <%=key %>?:<%= properties[key].type %>,
+    <%}%>}
+    const defaultFormModel: FormModel = {
+        <% for (let key in properties) { %>
+            //<%=properties[key].description%>    
+            <%=key %>: undefined,
+        <%}%>
+    }
+    export default defineComponent({
+      setup(props, ctx) {
+        const state = reactive({
+          config: <%=config%>,
+          modelRef:ref(),
+          visable:false,
+          loading:false,
+          submitLoading:false,
+          model: ctx.$deepCopy(defaultFormModel),
+          <%=rules?'ruels:'+rules:''%>
+        });
+        /**
+        * 新增
+        */
+        const add = ()=>{
+            state.model = ctx.$deepCopy(defaultFormModel)
+            state.visable = true
+        }
+        <%if(apiConfig.enableUpdate){%>
+        /**
+         * 编辑
+         * @model {FormModel} 编辑的内容
+         */
+        const edit = (model:FormModel)=>{ 
+            if(!model.<%= apiConfig.pk%>){
+                message.error("编辑数据为空")
+                return
+            }
+            <%if(apiConfig.enableDetail){%>
+                formDetail(model.<%=apiConfig.pk%>);
+            <%}else{%>
+                state.model = Object.assign(model,defaultFormModel);
+            <%}%> 
+            state.visable = true;   
+        }
+        <%if (apiConfig.enableDetail) {%>
+        /**
+         * <%=apiConfig.detailAction.description%>
+         */
+        const formDetail = async (id:string) => {
+            state.loading = true;
+            try{
+                const apiRes = await <%= apiConfig.detailAction.name %> (id)
+                if (apiRes.code == 0) {
+                    state.model = Object.assign(apiRes.result,defaultFormModel);
+                }
+            }finally {
+                state.loading = false;
+            }
+        }   
+        <%}%><%}%>    
+        /**
+          * 表单提交
+          */
+        const handleSubmit = async () => {
+            try {
+                await state.modelRef.value.validation();
+                state.submitLoading = true
+                    <% if (apiConfig.enableUpdate) { %>
+                const apiAciton = state.model.<%=apiConfig.pk%>?<%=apiConfig.updateAction.name %>:<%=apiConfig.createAction.name %>
+                <% } else {
+                    const apiAciton = apiConfig.createAction.name;
+                } %>
+                await apiAciton(state.model);
+                ctx.emit('ok')
+                closeModal()
+            } catch (error) {
+                state.submitLoading = false
+            }
+        }
+        /**
+         * 重置form 
+        */ 
+        const resetForm = () => {
+            state.modelRef.value.resetFields();
+        };
+        /**
+         * 关闭弹窗 
+        */ 
+        const closeModal = ()=> {
+            state.visable = false
+            ctx.emit('close')
+        }
+        return {
+            ...toRefs(state),
+            add,
+            <%=apiConfig.updateAction?'edit,':''%>
+            resetForm,
+            handleSubmit,
+            closeModal
+        }
+      }
+    })
+    </script>

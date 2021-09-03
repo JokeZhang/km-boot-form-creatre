@@ -59,6 +59,7 @@
       </template>
       生成代码
     </a-button>
+    <a-button type="link" size="samll" @click="$emit('generateVue')">生成VUE</a-button>
   </a-layout-header>
 </template>
 

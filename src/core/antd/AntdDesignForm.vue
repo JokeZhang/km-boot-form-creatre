@@ -31,6 +31,7 @@
               @generateCode="handleGenerateCode"
               @clearable="handleClearable"
               @swaggerConfig="swaggerVisable = true"
+              @generateVue="handleGenerateVue"
             >
               <slot name="header"></slot>
             </AntdHeader>
@@ -145,10 +146,13 @@
           </a-tab-pane>
         </a-tabs>
       </a-modal>
-      <swagger-config
+      <swagger-design
         v-model:value="swaggerVisable"
-        @ok="handleSwaggerGenerator"
-      ></swagger-config>
+        @ok="handleSwaggerDesign"
+      ></swagger-design>
+      <a-modal v-model:visible="vueCodeVisible" title="vue代码" :width="800">
+        <CodeEditor :value="vueCodeTemplate" language="html" readonly />
+      </a-modal>
     </a-layout>
   </div>
 </template>
@@ -164,12 +168,14 @@ import AntdWidgetForm from "./AntdWidgetForm.vue";
 import AntdGenerateForm from "./AntdGenerateForm.vue";
 import AntdWidgetConfig from "./AntdWidgetConfig.vue";
 import AntdFormConfig from "./AntdFormConfig.vue";
-import SwaggerConfig from "./SwaggerConfig.vue";
+import SwaggerDesign from "./SwaggerDesign.vue";
 import { antd } from "@/config";
 import { copy } from "@/utils";
 import { CodeType, PlatformType } from "@/enums";
 import generateCode from "@/utils/generateCode";
 import { WidgetForm } from "@/config/antd";
+import { generateData } from "@/utils/generateVue";
+import { SwaggerConfig } from "@/config/SwaggerConfig";
 
 export default defineComponent({
   name: "AntdDesignForm",
@@ -181,7 +187,7 @@ export default defineComponent({
     AntdGenerateForm,
     AntdWidgetConfig,
     AntdFormConfig,
-    SwaggerConfig,
+    SwaggerDesign,
   },
   props: {
     preview: {
@@ -251,6 +257,9 @@ export default defineComponent({
       codeLanguage: CodeType.Vue,
       jsonEg: JSON.stringify(antd.widgetForm, null, 2),
       swaggerVisable: false,
+      vueCodeVisible: false,
+      vueCodeTemplate: "",
+      apiConfig: null as any,
     });
 
     const handleUploadJson = () => {
@@ -263,9 +272,10 @@ export default defineComponent({
       }
     };
 
-    const handleSwaggerGenerator = (data:WidgetForm) => {
-      console.log("+++++++++++++++++++++++++++++++",data)
-      setJson(data);
+    const handleSwaggerDesign = ({ widgetForm, apiConfig }: SwaggerConfig) => {
+      console.log("::::::::::::::widgetForm:::::::::::::::::::",widgetForm)
+      state.apiConfig = apiConfig;
+      setJson(widgetForm);
     };
 
     const handleCopyClick = (text: string) => {
@@ -323,6 +333,10 @@ export default defineComponent({
     const getTemplate = (codeType: CodeType) =>
       generateCode(state.widgetForm, codeType, PlatformType.Antd);
 
+    const handleGenerateVue = () => {
+      state.vueCodeTemplate = generateData(state.widgetForm, state.apiConfig);
+      state.vueCodeVisible = true;
+    };
     const clear = () => handleClearable();
     return {
       ...toRefs(state),
@@ -337,7 +351,8 @@ export default defineComponent({
       setJson,
       getTemplate,
       clear,
-      handleSwaggerGenerator,
+      handleSwaggerDesign,
+      handleGenerateVue,
     };
   },
 });

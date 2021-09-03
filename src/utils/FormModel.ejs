@@ -1,0 +1,173 @@
+
+  <!-- <%= formElement.label%> Start -->
+  <a-form-item label="<%= formElement.label %>" name="<%= formElement.model %>">
+    <% if(formElement.type==='input' ){ %>
+    <a-input v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size"
+      <%=formElement.options.width?'style="width:'+formElement.options.width+';"':''%>
+      placeholder="<%= element.options.placeholder %>"
+      <%= formElement.options.maxlength?' maxlength="'+parseInt(element.options.maxlength)+'"':'' %> 
+      <%=formElement.options.prefix??'prefix="'+formElement.options.prefix+'"' %> 
+      <%= formElement.options.suffix??' suffix="'+formElement.options.suffix+'"' %> 
+      <%= formElement.options.addonBefore?' addon-before="'+formElement.options.addonBefore+'"':'' %> 
+      <%= formElement.options.addonAfter?' addon-after="'+formElement.options.addonAfter+'"':'' %> 
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %> 
+      <%= formElement.options.readonly?' readonly="'+formElement.options.readonly+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === ' password'){ %>
+    <a-input-password v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size" 
+      <%=formElement.options.width?'style="width:'+formElement.options.width+';"':''%>
+      placeholder="<%= element.options.placeholder %>" 
+      <%= formElement.options.maxlength?' maxlength="'+parseInt(element.options.maxlength)+'"':'' %> 
+      <%=formElement.options.prefix??'prefix="'+formElement.options.prefix+'"' %>
+      <%=formElement.options.prefix??'prefix="'+formElement.options.prefix+'"' %>
+      <%= formElement.options.suffix??' suffix="'+formElement.options.suffix+'"' %> 
+      <%= formElement.options.addonBefore?' addon-before="'+formElement.options.addonBefore+'"':'' %>
+      <%= formElement.options.addonAfter?' addon-after="'+formElement.options.addonAfter+'"':'' %>
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %>
+      <%= formElement.options.readonly?' readonly="'+formElement.options.readonly+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+      <%= formElement.options.visibilityToggle?' visibilityToggle="'+formElement.options.visibilityToggle+'"':'' %>
+    />
+  <% } else if(element.type === ' textarea'){ %>
+    <a-textarea 
+      style="resize: none;<%= formElement.options.width?'width:'+formElement.options.width+';':'' %>" 
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size" 
+      <%=formElement.options.rows?'rows="'+formElement.options.rows+'"':'' %> 
+      placeholder="<%= element.options.placeholder %>" 
+      <%= formElement.options.maxlength?' maxlength="'+parseInt(element.options.maxlength)+'"':'' %> 
+      <%= formElement.options.showCount?' showCount="'+formElement.options.showCount+'"':'' %> 
+      <%= formElement.options.autoSize?' autoSize="'+formElement.options.autoSize+'"':'' %> 
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %> 
+      <%= formElement.options.readonly?' readonly="'+formElement.options.readonly+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === ' number'){ %>
+    <a-input-number 
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size" 
+      style="width: <%= formElement.options.width %>" 
+      <%=formElement.options.max?':max="'+formElement.options.max+'"':'' %> 
+      <%= formElement.options.min?' :max="'+formElement.options.min+'"':'' %> 
+      <%= formElement.options.readonly?' readonly="'+formElement.options.readonly+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === ' radio'){ %>
+    <a-radio-group 
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size" 
+      style="width: '<%= formElement.options.width %>'" 
+      <%=formElement.options.readonly?'readonly="'+formElement.options.readonly+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %>
+    >
+      <% let options = element.options.remote? element.options.remoteOptions: element.options.options
+        for(let item of options){ 
+      %>
+        <a-radio 
+          key="<%= item.value %>"
+          value="<%= item.value %>" 
+          style="display:<%= element.options.inline ? ' inline-block' : 'block' %>;">
+          <%= element.options.showLabel ? item.label : item.value %>
+          </a-radio>
+      <%}%>
+    </a-radio-group>
+  <% } else if(element.type==='checkbox' ){ %>
+    <a-checkbox-group 
+      v-model:value="<%='model.'+formElement.model%>" 
+      style="width: <%= formElement.options.width %>;"
+      <%=formElement.options.disabled?'disabled="'+formElement.options.disabled+'"':'' %>
+    >
+      <% let options = element.options.remote? element.options.remoteOptions: element.options.options
+        for(let item of options){
+      %>
+      <a-checkbox 
+        key="<%= item.value %>" 
+        value="<%= item.value %>" 
+        style="display: <%=element.options.inline ? ' inline-block' : 'block' %>;"
+        >
+          <%= element.options.showLabel ? item.label : item.value %>
+      </a-checkbox>
+      <%}%>
+    </a-checkbox-group>
+  <% } else if(element.type==='time' ){ %>
+    <a-time-picker 
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size"  
+      style="width: '<%= formElement.options.width %>'" 
+      placeholder="<%= element.options.placeholder %>" 
+      <%= formElement.options.readonly?'inputReadOnly="'+formElement.options.readonly+'"':'' %>
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %>
+      <%= formElement.options.format?' format="'+formElement.options.format+'"':''%>
+      <%= formElement.options.valueFormat?' valueFormat="'+formElement.options.valueFormat+'"':''%>
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === 'date'){ %>
+    <a-date-picker
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size"  
+      style="width: '<%= formElement.options.width %>'" 
+      placeholder="<%= element.options.placeholder %>" 
+      <%= formElement.options.readonly?'inputReadOnly="'+formElement.options.readonly+'"':'' %>
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %>
+      <%= formElement.options.format?' format="'+formElement.options.format+'"':''%>
+      <%= formElement.options.valueFormat?' valueFormat="'+formElement.options.valueFormat+'"':''%>
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === 'rate'){ %>
+    <a-rate
+      v-model:value="<%='model.'+formElement.model%>" 
+      <%= formElement.options.max?':count="'+formElement.options.max+'"':'' %>
+      <%= formElement.options.max?':allowHalf="'+formElement.options.allowHalf+'"':'' %> 
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %>
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === 'select'){ %>
+    <a-select
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size"  
+      style="width: '<%= formElement.options.width %>'"
+      <%= formElement.options.mode?'mode="'+formElement.options.mode+'"':'' %>
+      placeholder="<%= element.options.placeholder %>" 
+      <%= formElement.options.allowClear?' allow-clear="'+formElement.options.allowClear+'"':'' %>
+      <%= formElement.options.showSearch?' showSearch="'+formElement.options.showSearch+'"':'' %>
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    >
+      <% let options = element.options.remote? element.options.remoteOptions: element.options.options
+        for(let item of options){
+      %>
+      <a-select-option
+        key="<%= item.value %>" 
+        value="<%= item.value %>"
+        label="<%= element.options.showLabel ? item.label : item.value%>"
+      >
+        <%= element.options.showLabel ? item.label : item.value %>
+      </a-select-option>
+      <%}%>
+    </a-select>
+  <% } else if(element.type === 'switch'){ %>
+    <a-switch
+      v-model:value="<%='model.'+formElement.model%>" 
+      :size="config.size === 'large' ? 'default' : config.size"
+      <%= formElement.options.checkedChildren?' checkedChildren="'+formElement.options.checkedChildren+'"':'' %> 
+      <%= formElement.options.unCheckedChildren?' unCheckedChildren="'+formElement.options.unCheckedChildren+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === 'slider'){ %>
+    <a-slider
+      v-model:value="<%='model.'+formElement.model%>" 
+      style="width: '<%= formElement.options.width %>'"
+      <%= formElement.options.min?' :min="'+formElement.options.min+'"':'' %> 
+      <%= formElement.options.max?' :max="'+formElement.options.max+'"':'' %> 
+      <%= formElement.options.step?' :step="'+formElement.options.step+'"':'' %> 
+      <%= formElement.options.range?' :range="'+formElement.options.range+'"':'' %> 
+      <%= formElement.options.reverse?' reverse="'+formElement.options.reverse+'"':'' %> 
+      <%= formElement.options.disabled?' disabled="'+formElement.options.disabled+'"':'' %> 
+    />
+  <% } else if(element.type === 'text'){ %>
+    <span><%=  element.options.defaultValue %></span>
+  <% } %>
+</a-form-item>
+<!-- <%= formElement.label%> End -->

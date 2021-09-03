@@ -323,7 +323,8 @@ export const advanceComponents = [
     options: {
       defaultValue: '',
       width: '',
-      disabled: false
+      disabled: false,
+      rules
     }
   },
   {

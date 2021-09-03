@@ -1,0 +1,465 @@
+{
+    "list": [
+        {
+            "label": "租户名称",
+            "type": "input",
+            "options": {
+                "width": "100%",
+                "defaultValue": "",
+                "placeholder": "请输入租户名称",
+                "maxlength": null,
+                "prefix": "",
+                "suffix": "",
+                "addonBefore": "",
+                "addonAfter": "",
+                "disabled": false,
+                "allowClear": false,
+                "readonly": false,
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": true,
+                    "type": "any",
+                    "max": 50
+                }
+            },
+            "key": "54b540893b154555b750dc31a2204a09",
+            "model": "tenantName"
+        },
+        {
+            "label": "租户编码",
+            "type": "input",
+            "options": {
+                "width": "100%",
+                "defaultValue": "",
+                "placeholder": "请输入租户编码",
+                "maxlength": null,
+                "prefix": "",
+                "suffix": "",
+                "addonBefore": "",
+                "addonAfter": "",
+                "disabled": false,
+                "allowClear": false,
+                "readonly": true,
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": false,
+                    "type": "any"
+                }
+            },
+            "key": "9af627ad9b2d4f77a0e74a5f255c8d77",
+            "model": "tenantCode"
+        },
+        {
+            "label": "域名",
+            "type": "input",
+            "options": {
+                "width": "100%",
+                "defaultValue": "",
+                "placeholder": "请输入域名",
+                "maxlength": null,
+                "prefix": "",
+                "suffix": "",
+                "addonBefore": "",
+                "addonAfter": "",
+                "disabled": false,
+                "allowClear": false,
+                "readonly": false,
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": true,
+                    "type": "any",
+                    "max": 100
+                }
+            },
+            "key": "795ab9e9047a43cdb109d2fa991525a5",
+            "model": "domain"
+        },
+        {
+            "label": "租户入住时间",
+            "type": "date",
+            "options": {
+                "defaultValue": "",
+                "width": "",
+                "placeholder": "请输入租户入住时间",
+                "format": "YYYY-MM-DD",
+                "readonly": false,
+                "allowClear": true,
+                "disabled": false,
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": true,
+                    "type": "date"
+                }
+            },
+            "key": "d445f817b26d4c588c5b04a7fb9be2cb",
+            "model": "joinTime"
+        },
+        {
+            "label": "有效时间止",
+            "type": "date",
+            "options": {
+                "defaultValue": "",
+                "width": "",
+                "placeholder": "请输入有效时间止",
+                "format": "YYYY-MM-DD",
+                "readonly": false,
+                "allowClear": true,
+                "disabled": false,
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": true,
+                    "type": "date"
+                }
+            },
+            "key": "f83c485f133d4a8ebebb566daf1e41ab",
+            "model": "endTime"
+        },
+        {
+            "label": "状态",
+            "type": "select",
+            "options": {
+                "defaultValue": [],
+                "width": "200px",
+                "mode": null,
+                "placeholder": "请输入状态",
+                "remote": false,
+                "showLabel": false,
+                "showSearch": false,
+                "clearable": false,
+                "disabled": false,
+                "props": {
+                    "label": "label",
+                    "value": "value"
+                },
+                "options": [
+                    {
+                        "label": "Option 1",
+                        "value": "Option 1"
+                    },
+                    {
+                        "label": "Option 2",
+                        "value": "Option 2"
+                    },
+                    {
+                        "label": "Option 3",
+                        "value": "Option 3"
+                    }
+                ],
+                "remoteOptions": [],
+                "remoteFunc": "https://raw.githubusercontent.com/fuchengwei/vue-form-create/master/mock/mock.json",
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": false,
+                    "type": "integer"
+                }
+            },
+            "key": "5ce5706d4c954eb4ae0cca357d687809",
+            "model": "status"
+        },
+        {
+            "label": "简介",
+            "type": "input",
+            "options": {
+                "width": "100%",
+                "defaultValue": "",
+                "placeholder": "请输入简介",
+                "maxlength": null,
+                "prefix": "",
+                "suffix": "",
+                "addonBefore": "",
+                "addonAfter": "",
+                "disabled": false,
+                "allowClear": false,
+                "readonly": false,
+                "rules": {
+                    "trigger": "blur",
+                    "enum": "",
+                    "message": "",
+                    "pattern": "",
+                    "required": false,
+                    "type": "any"
+                }
+            },
+            "key": "8ed703aebbab4feaa5f7324a3f869c26",
+            "model": "description"
+        }
+    ],
+    "config": {
+        "size": "default",
+        "hideRequiredMark": false,
+        "layout": "horizontal",
+        "labelAlign": "right",
+        "labelCol": {
+            "span": 3,
+            "offset": 0
+        }
+    },
+    "enableUpdate": true,
+    "enableDetial": true,
+    "createAction": {
+        "name": "addTenantUsingPOST",
+        "description": "租户添加",
+        "method": "post",
+        "path": "/system/tenant",
+        "requestModel": {
+            "title": "TenantFormQo",
+            "type": "object",
+            "properties": {
+                "autoDb": {
+                    "type": "boolean",
+                    "description": "自动配置",
+                    "example": false
+                },
+                "dbNameSuffix": {
+                    "type": "string",
+                    "description": "数据库后缀"
+                },
+                "dbPassword": {
+                    "type": "string",
+                    "description": "数据库密码"
+                },
+                "dbUserName": {
+                    "type": "string",
+                    "description": "数据库账号"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "简介"
+                },
+                "domain": {
+                    "type": "string",
+                    "description": "域名"
+                },
+                "endTime": {
+                    "type": "string",
+                    "description": "有效时间止",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "租户ID"
+                },
+                "joinTime": {
+                    "type": "string",
+                    "description": "租户入住时间",
+                    "format": "date-time"
+                },
+                "loginBackground": {
+                    "type": "string",
+                    "description": "背景"
+                },
+                "status": {
+                    "type": "integer",
+                    "description": "0-删除；10-停止；20-欠费；30-正常",
+                    "format": "int32"
+                },
+                "tenantCode": {
+                    "type": "string",
+                    "description": "租户编码"
+                },
+                "tenantLogo": {
+                    "type": "string",
+                    "description": "Logo"
+                },
+                "tenantName": {
+                    "type": "string",
+                    "description": "租户名称"
+                }
+            }
+        }
+    },
+    "updateAction": {
+        "name": "updateTenantUsingPUT",
+        "description": "租户更新",
+        "method": "put",
+        "path": "/system/tenant",
+        "requestModel": {
+            "title": "TenantFormQo",
+            "type": "object",
+            "properties": {
+                "autoDb": {
+                    "type": "boolean",
+                    "description": "自动配置",
+                    "example": false
+                },
+                "dbNameSuffix": {
+                    "type": "string",
+                    "description": "数据库后缀"
+                },
+                "dbPassword": {
+                    "type": "string",
+                    "description": "数据库密码"
+                },
+                "dbUserName": {
+                    "type": "string",
+                    "description": "数据库账号"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "简介"
+                },
+                "domain": {
+                    "type": "string",
+                    "description": "域名"
+                },
+                "endTime": {
+                    "type": "string",
+                    "description": "有效时间止",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "租户ID"
+                },
+                "joinTime": {
+                    "type": "string",
+                    "description": "租户入住时间",
+                    "format": "date-time"
+                },
+                "loginBackground": {
+                    "type": "string",
+                    "description": "背景"
+                },
+                "status": {
+                    "type": "integer",
+                    "description": "0-删除；10-停止；20-欠费；30-正常",
+                    "format": "int32"
+                },
+                "tenantCode": {
+                    "type": "string",
+                    "description": "租户编码"
+                },
+                "tenantLogo": {
+                    "type": "string",
+                    "description": "Logo"
+                },
+                "tenantName": {
+                    "type": "string",
+                    "description": "租户名称"
+                }
+            }
+        }
+    },
+    "detailAction": {
+        "name": "getFormDetailUsingGET",
+        "description": "获取租户的表单详情",
+        "method": "get",
+        "path": "/system/tenant/{tenantId}",
+        "responseModel": {
+            "title": "TenantFormVo",
+            "type": "object",
+            "properties": {
+                "applicationId": {
+                    "type": "string",
+                    "description": "微服务的application"
+                },
+                "autoDb": {
+                    "type": "boolean",
+                    "description": "自动配置",
+                    "example": false
+                },
+                "dbHost": {
+                    "type": "string",
+                    "description": "数据库地址"
+                },
+                "dbName": {
+                    "type": "string",
+                    "description": "数据库名称"
+                },
+                "dbNameSuffix": {
+                    "type": "string",
+                    "description": "数据库后缀"
+                },
+                "dbPassword": {
+                    "type": "string",
+                    "description": "数据库密码"
+                },
+                "dbPort": {
+                    "type": "integer",
+                    "description": "数据库端口号",
+                    "format": "int32"
+                },
+                "dbUser": {
+                    "type": "string",
+                    "description": "数据库用户名"
+                },
+                "dbUserName": {
+                    "type": "string",
+                    "description": "数据库账号"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "简介"
+                },
+                "domain": {
+                    "type": "string",
+                    "description": "域名"
+                },
+                "endTime": {
+                    "type": "string",
+                    "description": "有效时间止",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "主键"
+                },
+                "joinTime": {
+                    "type": "string",
+                    "description": "租户入住时间",
+                    "format": "date-time"
+                },
+                "loginBackground": {
+                    "type": "string",
+                    "description": "背景"
+                },
+                "status": {
+                    "type": "integer",
+                    "description": "0-删除；10-停止；20-欠费；30-正常",
+                    "format": "int32"
+                },
+                "tenantCode": {
+                    "type": "string",
+                    "description": "租户编码"
+                },
+                "tenantId": {
+                    "type": "string",
+                    "description": "租户ID"
+                },
+                "tenantLogo": {
+                    "type": "string",
+                    "description": "Logo"
+                },
+                "tenantName": {
+                    "type": "string",
+                    "description": "租户名称"
+                }
+            }
+        }
+    },
+    "controllerData": {
+        "name": "租户管理",
+        "description": "Tenant Controller",
+        "apiName": "TenantApi"
+    },
+    "pk": "id",
+    "modelEntity": null
+}

@@ -1,5 +1,5 @@
 <template>
-  <a-drawer v-model:visible="visable" width="800">
+  <a-drawer v-model:visible="visable" width="1024">
     <a-card no-border>
       <a-form>
         <a-form-item
@@ -7,11 +7,14 @@
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
         >
-          <a-select
-            v-model:value="currentTag"
-            :options="tags"
-            @change="OnChange"
-          >
+          <a-select v-model:value="currentTagIndex" @change="OnChange">
+            <a-select-option :value="-1" disabled>选择模块</a-select-option>
+            <a-select-option
+              v-for="(tag, index) in tags"
+              :key="index"
+              :value="index"
+              >{{ tag.name }}</a-select-option
+            >
           </a-select>
         </a-form-item>
         <a-form-item
@@ -20,23 +23,55 @@
           :wrapper-col="wrapperCol"
         >
           <a-select v-model:value="addModelIndex" @change="addChange">
+            <a-select-option :value="-1" disabled>选择新增接口</a-select-option>
             <a-select-option
               v-for="(item, index) in apiData"
               :key="index"
               :value="index"
             >
-              {{ item.name }}
+              {{ item.description }}
             </a-select-option>
           </a-select>
+        </a-form-item>
+        <a-form-item
+          label="其它相关"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-checkbox v-model:checked="apiConfig.enableUpdate"
+            >更新功能</a-checkbox
+          >
+          <a-checkbox v-model:checked="apiConfig.enableDetial"
+            >表单详情</a-checkbox
+          >
         </a-form-item>
         <a-form-item
           label="更新Api"
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
+          v-if="apiConfig.enableUpdate"
         >
-          <a-select>
+          <a-select v-model:value="updateModelIndex" @change="onUpdateChange">
+            <a-select-option :value="-1" disabled>选择更新接口</a-select-option>
+            <a-select-option
+              v-for="(item, index) in apiData"
+              :key="index"
+              :value="index"
+            >
+              {{ item.description }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="详情Api"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+          v-if="apiConfig.enableDetial"
+        >
+          <a-select v-model:value="detailModelIndex" @change="onDetailChange">
+            <a-select-option :value="-1" disabled>选择详情接口</a-select-option>
             <a-select-option v-for="(item, index) in apiData" :key="index">
-              {{ item.name }}
+              {{ item.description }}
             </a-select-option>
           </a-select>
         </a-form-item>
@@ -47,6 +82,11 @@
             size="small"
             :pagination="{ pageSize: 100 }"
             :scroll="{ y: 340 }"
+            :rowSelection="{
+              columnTitle: '主键',
+              type: 'radio',
+              onSelect,
+            }"
           >
             <a-table-column
               key="description"
@@ -70,8 +110,16 @@
             </a-table-column>
             <a-table-column key="description" title="类型" data-index="type">
               <template #default="{ record }">
-                <a-select v-model:value="record.componentType">
-                  <a-select-option :value="item.type" v-for="(item,index) in componenList" :key="index">{{item.label}}</a-select-option>
+                <a-select
+                  v-model:value="record.componentType"
+                  style="width: 100%"
+                >
+                  <a-select-option
+                    :value="item.type"
+                    v-for="(item, index) in componenList"
+                    :key="index"
+                    >{{ item.label }}</a-select-option
+                  >
                 </a-select>
               </template>
             </a-table-column>
@@ -86,8 +134,10 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import SwaggerService from "@/services/SwaggerService";
 import { computed, defineComponent, reactive, toRefs } from "@vue/runtime-core";
+import { ApiConfig, SwaggerTag } from "@/config/SwaggerConfig";
 import {
   widgetForm,
   WidgetForm,
@@ -97,16 +147,15 @@ import {
 } from "@/config/antd";
 import { v4 } from "uuid";
 
-interface Tag {
-  value: string;
-}
-
-interface State {
-  tags: Array<Tag>;
-  currentTag: string;
+declare interface State {
+  tags: Array<SwaggerTag>;
+  currentTagIndex: number;
   addModelIndex: number;
+  updateModelIndex: number;
+  detailModelIndex: number;
   apiData: Array<any>;
   formModels?: Array<any>;
+  apiConfig: ApiConfig;
 }
 
 const componentsTypes: any = {
@@ -114,6 +163,8 @@ const componentsTypes: any = {
   integer: "number",
   boolean: "switch",
 };
+
+const { getApiDoc, getApiMethods } = SwaggerService();
 
 export default defineComponent({
   name: "SwaggerConfig",
@@ -128,33 +179,70 @@ export default defineComponent({
       tags: [],
       apiData: [],
       formModels: [],
-      currentTag: "",
+      currentTagIndex: -1,
       addModelIndex: -1,
+      updateModelIndex: -1,
+      detailModelIndex: -1,
+      apiConfig: {
+        enableUpdate: false,
+        enableDetial: false,
+        createAction: null,
+        updateAction: null,
+        detailAction: "",
+        controllerData: undefined,
+        pk: "",
+        modelEntity: null,
+      },
     });
+    /**
+     * 组件显示
+     */
     const visable = computed({
       get: () => props.value,
       set: (value) => {
         ctx.emit("update:value", value);
       },
     });
+    /**
+     * 所有组件
+     */
     const componenList = computed(() => [
       ...basicComponents,
       ...advanceComponents,
     ]);
-    const { getApiDoc, getApiMethods } = SwaggerService();
+    /**
+     * 接口数据初始化
+     */
     getApiDoc().then((res) => {
       state.tags = res;
     });
-    const OnChange = (tag: string) => {
-      const apiData = getApiMethods(tag);
-      console.log("：：：：：：：", apiData);
+    /**
+     * 模块变更时候
+     */
+    const OnChange = (index: number) => {
+      const tagName = state.tags[index].name;
+      const apiData = getApiMethods(tagName);
       state.apiData = apiData;
+      state.apiConfig.controllerData = state.tags[index];
+      state.apiConfig.controllerData.apiName =
+        state.apiConfig.controllerData.description
+          .replace("Controller", "Api")
+          .replace(" ", "");
+      state.apiConfig.updateAction = undefined;
+      state.apiConfig.detailAction = undefined;
+      state.apiConfig.enableUpdate = false;
+      state.apiConfig.enableDetial = false;
       state.formModels = [];
       state.addModelIndex = -1;
+      state.updateModelIndex = -1;
     };
+    /**
+     * 新增接口选择
+     */
     const addChange = (index: number) => {
+      state.apiConfig.createAction = state.apiData[index];
       if (state.apiData[index].requestModel) {
-        const properties = state.apiData[index].requestModel.properties;
+        const properties = state.apiConfig.createAction.requestModel.properties;
         const modelFields = [];
         for (let key in properties) {
           const row = properties[key];
@@ -180,12 +268,33 @@ export default defineComponent({
         state.formModels = modelFields;
       }
     };
+    /**
+     * 更新接口选择时候
+     */
+    const onUpdateChange = (index: number) => {
+      state.apiConfig.updateAction = state.apiData[index];
+    };
+    /**
+     * 详情接口选择时候
+     */
+    const onDetailChange = (index: number) => {
+      state.apiConfig.detailAction = state.apiData[index];
+    };
+    /**
+     * 主键选择时候
+     */
+    const onSelect = (record: any) => {
+      state.apiConfig.pk = record.key;
+    };
     return {
       ...toRefs(state),
       visable,
       componenList,
       OnChange,
       addChange,
+      onUpdateChange,
+      onDetailChange,
+      onSelect,
     };
   },
   data() {
@@ -206,30 +315,13 @@ export default defineComponent({
       const list: any = [];
       this.formModels?.forEach((el) => {
         if (el.show) {
-          const filed = {
-            label: "单行文本",
-            type: "input",
-            options: {
-              width: "100%",
-              defaultValue: "",
-              placeholder: "",
-              maxlength: null,
-              prefix: "",
-              suffix: "",
-              addonBefore: "",
-              addonAfter: "",
-              disabled: false,
-              allowClear: false,
-              readonly: false,
-              rules,
-            },
-            key: "",
-            model: "",
-          };
+          const filed = this.findComponent(el.componentType);
           filed.label = el.description;
           filed.type = el.componentType;
           filed.options.placeholder = `请输入${el.description}`;
-          filed.options.rules.required = el.required;
+          if (filed.options.rules) {
+            filed.options.rules.required = el.required;
+          }
           filed.key = v4().replaceAll("-", "");
           filed.model = `${el.key}`;
           list.push(JSON.parse(JSON.stringify(filed)));
@@ -237,7 +329,37 @@ export default defineComponent({
       });
       this.visable = false;
       formData.list = list;
-      this.$emit("ok", formData);
+      this.$emit("ok", {
+        widgetForm: formData,
+        apiConfig: this.apiConfig,
+      });
+    },
+    findComponent(type: string) {
+      const data = this.componenList.find((el) => el.type == type);
+      return {
+        ...(data
+          ? data
+          : {
+              label: "单行文本",
+              type: "input",
+              options: {
+                width: "100%",
+                defaultValue: "",
+                placeholder: "",
+                maxlength: null,
+                prefix: "",
+                suffix: "",
+                addonBefore: "",
+                addonAfter: "",
+                disabled: false,
+                allowClear: false,
+                readonly: false,
+                rules,
+              },
+            }),
+        key: "",
+        model: "",
+      };
     },
   },
 });

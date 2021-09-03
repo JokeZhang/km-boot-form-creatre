@@ -278,7 +278,7 @@ export default defineComponent({
       row.columns[index].list[newIndex] = {
         ...row.columns[index].list[newIndex],
         key,
-        model: `${row.columns[index].list[newIndex].type}_${key}`,
+       // model: `${row.columns[index].list[newIndex].type}_${key}`,
         rules: []
       }
 

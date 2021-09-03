@@ -26,9 +26,7 @@ export default function SwaggerService() {
             url: "system/v3/api-docs",
             method: "GET"
         })
-        const apiTags = data.tags.map((tag: Tag) => {
-            return { value: tag.name }
-        })
+        const apiTags = data.tags;
         state.apiMethods = data.paths
         state.apiModels = data.components.schemas
         return apiTags;
@@ -54,7 +52,8 @@ export default function SwaggerService() {
                     }
 
                     const item = {
-                        name: aciton.summary,
+                        name: aciton.operationId,
+                        description: aciton.description,
                         method: m,
                         path: key,
                         requestModel,

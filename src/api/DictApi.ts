@@ -1,0 +1,1 @@
+export const dictAddUsingPOST = (data:any)=>{console.log("xxxxxxxxxxxxdictAddUsingPOSTxxxxxxxxxxxxxx",data)}

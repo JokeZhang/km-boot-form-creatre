@@ -140,6 +140,7 @@ export default defineComponent({
     onMounted(() => {
       generateModel(state.widgetForm?.list ?? [])
       generateOptions(state.widgetForm?.list ?? [])
+      console.log("+++++++++++++++++++++++++++",state.rules)
     })
 
     const getData = () => {
